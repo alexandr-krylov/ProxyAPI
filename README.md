@@ -1,5 +1,10 @@
 # Block Factoring Proxi API
 
+## Start
+
+    clone
+    docker-compose up
+    docker exec -it proxyapi_app_1 composer install
 Create a lot.
 ```mermaid
 sequenceDiagram
@@ -14,3 +19,6 @@ Show lots
 sequenceDiagram
     Front->>ProxyAPI: Get ticker
 ```
+
+All things we will store here except DepthOfMarket
+
