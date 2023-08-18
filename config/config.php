@@ -25,6 +25,8 @@ return [
                 'GET api/0/token' => 'token/index',
                 'POST api/0/wallet' => 'wallet/create',
                 'GET api/0/wallet' => 'wallet/view',
+                'POST api/0/transaction' => 'transaction/create',
+                'GET api/0/transaction' => 'transaction/view',
             ],
         ]
     ],
