@@ -10,11 +10,21 @@ services:
       - .:/var/www/app
     ports:
       - 8001:8000
+    networks:
+      - default
+      - common
   db:
     image: mariadb
     environment:
       MARIADB_ROOT_PASSWORD: example
     volumes:
       - ./docker/mariadb/initdb:/docker-entrypoint-initdb.d
+      - proxyapi-db:/var/lib/mysql
     ports:
       - 3308:3306
+networks:
+  common:
+    external: true
+    name: common-network
+volumes:
+  proxyapi-db:

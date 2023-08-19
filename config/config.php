@@ -27,7 +27,11 @@ return [
                 'GET api/0/wallet' => 'wallet/view',
                 'POST api/0/transaction' => 'transaction/create',
                 'GET api/0/transaction' => 'transaction/view',
+                'POST api/0/order' => 'order/create',
             ],
         ]
+    ],
+    'params' => [
+        'DOMUrl' => 'http://depthofmarket_app_1:8000/api/0/',
     ],
 ];
