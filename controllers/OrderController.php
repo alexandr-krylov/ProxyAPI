@@ -45,8 +45,8 @@ class OrderController extends Controller
                 {
                     $this->hold(
                         $this->request->post('owner_id'),
-                        Yii::$app->params['mainCurrency'],
-                        $this->request->post('quantity') * $this->request->post('price')
+                        $this->request->post('ticker'),
+                        $this->request->post('quantity')
                     );
                 }
             }
