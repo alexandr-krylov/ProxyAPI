@@ -32,7 +32,6 @@ class WalletController extends Controller
         $query->where(['owner_id' => $this->request->get('owner_id')]);
         $query->andWhere(['<>', 'value', 0]);
         $query->orderBy('currency', 'type');
-        var_dump($query->createCommand()->rawSql);
         return $query->all();
     }
     public function behaviors()
