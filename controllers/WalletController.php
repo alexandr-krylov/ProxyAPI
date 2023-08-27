@@ -18,7 +18,21 @@ class WalletController extends Controller
     }
     public function actionView()
     {
-        return Wallet::findAll(['owner_id' => $this->request->get('owner_id')]);
+        $query = Wallet::find();
+
+        $query->select([
+            'id',
+            'currency',
+            'value',
+            'type',
+            'created_at',
+            'updated_at',
+            '(CASE type WHEN 1 THEN \'' . ((array)Type::from(1))['name'] . '\' WHEN 2 THEN \'' . ((array)Type::from(2))['name'] . '\' END) AS typeText'
+            ]);
+        $query->where(['owner_id' => $this->request->get('owner_id')]);
+        $query->where(['<>', 'value', 0]);
+        $query->orderBy('currency', 'type');
+        return $query->all();
     }
     public function behaviors()
     {

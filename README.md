@@ -22,3 +22,9 @@ sequenceDiagram
 
 All things we will store here except DepthOfMarket
 
+апи список кошельков упорядочить по названию и типу
+пусттые кошелькии можно не показывать
+
+tickers = contracts
+
+profitability = (((cancellation price - current price) / current price) / days to cancellation) * 365   = % per year
