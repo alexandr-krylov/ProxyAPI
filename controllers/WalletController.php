@@ -30,8 +30,9 @@ class WalletController extends Controller
             '(CASE type WHEN 1 THEN \'' . ((array)Type::from(1))['name'] . '\' WHEN 2 THEN \'' . ((array)Type::from(2))['name'] . '\' END) AS typeText'
             ]);
         $query->where(['owner_id' => $this->request->get('owner_id')]);
-        $query->where(['<>', 'value', 0]);
+        $query->andWhere(['<>', 'value', 0]);
         $query->orderBy('currency', 'type');
+        var_dump($query->createCommand()->rawSql);
         return $query->all();
     }
     public function behaviors()
