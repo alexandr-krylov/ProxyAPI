@@ -11,13 +11,16 @@ class TokenController extends Controller
     {
         $token = new Token();
         $token->attributes = $this->request->post();
-        // $token->volume = $token->price * $token->quantity;
         return $token->save();
     }
 
+    /**
+     * profitability = (((cancellation price - current price) / current price) / days to cancellation) * 365   = % per year
+     */
     public function actionIndex()
     {
-        return Token::find()->all();
+        $tokens = Token::find()->all();
+        return $tokens;
     }
 
     public function behaviors()
