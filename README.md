@@ -27,4 +27,4 @@ All things we will store here except DepthOfMarket
 
 tickers = contracts
 
-profitability = (((cancellation price - current price) / current price) / days to cancellation) * 365   = % per year
+profitability = (((cancellation price - current price) / current price) / days to cancellation) * 360   = % per year

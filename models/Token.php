@@ -4,12 +4,13 @@ namespace app\models;
 
 use DateTime;
 use yii\db\ActiveRecord;
+use app\services\HttpClient;
 
 class Token extends ActiveRecord
 {
-    public $ask;
-    public $bid;
-    public $profitability;
+    private ?float $_ask = null;
+    private ?float $_bid = null;
+    private ?float $_profitability = null;
     private ?int $_days = null;
     public static function tableName()
     {
@@ -36,8 +37,9 @@ class Token extends ActiveRecord
     }
     public function setDays($days)
     {
-        $this->_days = $days;
+        $this->_days = (int)$days;
     }
+
     /**
      * days to cancellation = date cancellation - today
      */
@@ -50,5 +52,56 @@ class Token extends ActiveRecord
             );
         }
         return $this->_days;
+    }
+    
+    public function setBid($bid)
+    {
+        $this->_bid = (float)$bid;
+    }
+
+    public function getBid()
+    {
+        if ($this->_bid === null)
+        {
+            $this->_setAskBid();
+        }
+        return $this->_bid;
+    }
+    public function setAsk($ask)
+    {
+        $this->_ask = (float)$ask;
+    }
+    public function getAsk()
+    {
+        if ($this->_ask === null)
+        {
+            $this->_setAskBid();
+        }
+        return $this->_ask;
+    }
+    private function _setAskBid()
+    {
+        $client = new HttpClient();
+        $responce = $client->getMarketData(['ticker' => $this->ticker]);
+        $this->setBid($responce['bid']);
+        $this->setAsk($responce['ask']);
+    }
+    public function setProfitability($profitability)
+    {
+        $this->_profitability = (float)$profitability;
+    }
+
+    public function getProfitability()
+    {
+        if ($this->_profitability === null)
+        {
+            $this->setProfitability(
+                (
+                    (($this->price - $this->bid) / $this->bid)
+                    * (360 / $this->days)
+                ) * 100
+            );
+        }
+        return $this->_profitability;
     }
 }

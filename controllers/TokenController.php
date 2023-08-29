@@ -15,7 +15,7 @@ class TokenController extends Controller
     }
 
     /**
-     * profitability = (((cancellation price - current price) / current price) / days to cancellation) * 365   = % per year
+     * profitability = (((cancellation price - current price) / current price) / days to cancellation) * 365  * 100 % = % per year
      */
     public function actionIndex()
     {

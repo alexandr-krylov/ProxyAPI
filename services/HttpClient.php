@@ -21,7 +21,7 @@ class HttpClient
     }
     public function getMarketData($request)
     {
-        $response = $this->client->get('tickerdata', $request)->send();
+        $response = $this->client->get('marketdata', $request)->send();
         if ($response->isOk) {
             return $response->data;
         }
