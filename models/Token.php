@@ -95,14 +95,14 @@ class Token extends ActiveRecord
     {
         if ($this->_profitability === null)
         {
-            if ($this->bid == 0 or $this->days == 0)
+            if ($this->ask == 0 or $this->days == 0)
             {
                 $this->setProfitability(0);
             } else 
             {
                 $this->setProfitability(
                     (
-                        (($this->price - $this->bid) / $this->bid)
+                        (($this->price - $this->ask) / $this->ask)
                         * (360 / $this->days)
                     ) * 100
                 );
