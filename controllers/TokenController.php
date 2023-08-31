@@ -19,7 +19,12 @@ class TokenController extends Controller
      */
     public function actionIndex()
     {
-        $tokens = Token::find()->all();
+        $query = Token::find();
+        if (null !== $this->request->get('ticker'))
+        {
+            $query->where(['ticker' => $this->request->get('ticker')]);
+        }
+        $tokens = $query->all();
         return $tokens;
     }
 
