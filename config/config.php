@@ -5,6 +5,7 @@ $db = require __DIR__ . '/db.php';
 return [
     'id' => 'app',
     'basePath' => __DIR__ . '/../',
+    'bootstrap' => ['log'],
     'controllerNamespace' => 'app\controllers',
     'aliases' => [
         '@app' => __DIR__ . '/../',
@@ -29,7 +30,15 @@ return [
                 'GET api/0/transaction' => 'transaction/view',
                 'POST api/0/order' => 'order/create',
             ],
-        ]
+        ],
+        'log' => [
+            'targets' => [
+                'file' => [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['trace'],
+                ],
+            ],
+        ],
     ],
     'params' => [
         'DOMUrl' => 'http://depthofmarket_app_1:8000/api/0/',
