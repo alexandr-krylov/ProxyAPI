@@ -26,4 +26,12 @@ class HttpClient
             return $response->data;
         }
     }
+    public function setOrdersRedempted($request)
+    {
+        $response = $this->client->put('order', $request)->send();
+        if ($response->isOk)
+        {
+            return $response->data;
+        }
+    }
 }

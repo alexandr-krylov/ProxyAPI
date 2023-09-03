@@ -1,6 +1,7 @@
 <?php
 
 $db = require __DIR__ . '/db.php';
+$params = require __DIR__ . '/params.php';
 
 return [
     'id' => 'app',
@@ -40,8 +41,5 @@ return [
             ],
         ],
     ],
-    'params' => [
-        'DOMUrl' => 'http://depthofmarket_app_1:8000/api/0/',
-        'mainCurrency' => 'KZT',
-    ],
+    'params' => $params,
 ];
