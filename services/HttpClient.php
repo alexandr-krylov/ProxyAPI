@@ -34,4 +34,20 @@ class HttpClient
             return $response->data;
         }
     }
+    public function getVolume($request)
+    {
+        $response = $this->client->get('volume', $request)->send();
+        if ($response->isOk)
+        {
+            return $response->data;
+        }
+    }
+    public function getDOM($request)
+    {
+        $response = $this->client->get('dom', $request)->send();
+        if ($response->isOk)
+        {
+            return $response->data;
+        }
+    }
 }

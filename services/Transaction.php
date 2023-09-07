@@ -20,6 +20,7 @@ class Transaction
             if ($sourceWallet->value - $transaction->value < 0) throw new Exception("Source wallet no enough value");
             if ($sourceWallet->currency != $transaction->currency) throw new Exception("No match currecies");
             if ($destinationWallet->currency != $transaction->currency) throw new Exception("No match currencies");
+            if ($sourceWallet->id == $destinationWallet->id) throw new Exception("Transaction between the same wallets");
             $sourceWallet->value = $sourceWallet->value - $transaction->value;
             $destinationWallet->value = $destinationWallet->value + $transaction->value;
             $sourceWallet->save();
