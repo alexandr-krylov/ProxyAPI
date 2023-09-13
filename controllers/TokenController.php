@@ -22,6 +22,10 @@ class TokenController extends Controller
         $query = Token::find();
         if (null !== $this->request->get('ticker'))
         {
+            $query->select([
+                '*',
+                'ROUND(price, 2) AS price',
+            ]);
             $query->where(['ticker' => $this->request->get('ticker')]);
         }
         $tokens = $query->all();

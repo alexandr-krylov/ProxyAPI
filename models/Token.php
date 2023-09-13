@@ -101,10 +101,10 @@ class Token extends ActiveRecord
             } else 
             {
                 $this->setProfitability(
-                    (
+                    round((
                         (($this->price - $this->ask) / $this->ask)
                         * (360 / $this->days)
-                    ) * 100
+                    ) * 100, 2)
                 );
             }
         }

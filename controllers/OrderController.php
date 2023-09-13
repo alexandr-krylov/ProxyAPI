@@ -256,4 +256,46 @@ class OrderController extends Controller
             ]
         );
     }
+    public function actionCancel()
+    {
+        $client = new HttpClient();
+        $request = ['id' => $this->request->post('id')];
+        try
+        {
+            $response = $client->putOrderCancel($request);
+            if ($response['side'] == 1)   //Sell
+            {
+                $currency = $response['ticker'];
+                $value = $response['quantity'] - $response['filled'];
+            }
+            if ($response['side'] == 2)   //Buy
+            {
+                $currency = Yii::$app->params['mainCurrency'];
+                $value = $response['price'] * ($response['quantity'] - $response['filled']);
+            }
+            $source = Wallet::findOne([
+                'owner_id' => $response['owner_id'],
+                'currency' => $currency,
+                'type' => Type::Hold->value,
+            ])->id;
+            $destination = Wallet::findOne([
+                'owner_id' => $response['owner_id'],
+                'currency' => $currency,
+                'type' => Type::Main->value,
+            ])->id;
+            (new Transaction())
+            ->create([
+                'source' => $source,
+                'destination' => $destination,
+                'currency' => $currency,
+                'value' => $value,
+            ]);
+            return $response;
+        }
+        catch (Exception $e)
+        {
+            Yii::$app->response->statusCode = 404;
+            return $e->getMessage();
+        }
+    }
 }

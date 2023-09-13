@@ -2,6 +2,7 @@
 
 namespace app\services;
 
+use Exception;
 use Yii;
 use yii\httpclient\Client;
 
@@ -48,6 +49,17 @@ class HttpClient
         if ($response->isOk)
         {
             return $response->data;
+        }
+    }
+    public function putOrderCancel($request)
+    {
+        $response = $this->client->delete('order', $request)->send();
+        if ($response->isOk)
+        {
+            return $response->data;
+        } else
+        {
+            throw new Exception($response->data['message']);
         }
     }
 }

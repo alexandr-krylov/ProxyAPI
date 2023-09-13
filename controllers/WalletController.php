@@ -23,7 +23,7 @@ class WalletController extends Controller
         $query->select([
             'id',
             'currency',
-            'value',
+            'ROUND(value, 2) AS value',
             'type',
             'created_at',
             'updated_at',

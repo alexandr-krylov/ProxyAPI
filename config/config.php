@@ -30,6 +30,7 @@ return [
                 'POST api/0/transaction' => 'transaction/create',
                 'GET api/0/transaction' => 'transaction/view',
                 'POST api/0/order' => 'order/create',
+                'PUT api/0/order/cancel' => 'order/cancel',
             ],
         ],
         'log' => [

@@ -23,6 +23,10 @@ class TransactionController extends Controller
     public function actionView()
     {
         return Transaction::find()
+            ->select([
+                '*',
+                'ROUND(transaction.value, 2) AS value',
+            ])
             ->leftJoin('wallet', 'wallet.id = transaction.source OR wallet.id = transaction.destination')
             ->where(['wallet.owner_id' => $this->request->get('owner_id')])
             ->all();
