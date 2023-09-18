@@ -27,8 +27,18 @@ class TransactionController extends Controller
                 '*',
                 'ROUND(transaction.value, 2) AS value',
             ])
-            ->leftJoin('wallet', 'wallet.id = transaction.source OR wallet.id = transaction.destination')
-            ->where(['wallet.owner_id' => $this->request->get('owner_id')])
+            ->leftJoin('wallet AS sourceWallet', 'sourceWallet.id = transaction.source')
+            ->leftJoin('wallet AS destinationWallet', 'destinationWallet.id = transaction.destination')
+            ->orWhere([
+                'and',
+                ['sourceWallet.owner_id' => $this->request->get('owner_id')],
+                ['!=', 'destinationWallet.owner_id', $this->request->get('owner_id')]
+                ])
+            ->orWhere([
+                'and',
+                ['!=', 'sourceWallet.owner_id', $this->request->get('owner_id')],
+                ['destinationWallet.owner_id' => $this->request->get('owner_id')]
+                ])
             ->all();
     }
     public function behaviors()
