@@ -125,14 +125,32 @@ class OrderController extends Controller
         }
         //2. CREATE ORDER
         $responses =  $client->send($this->request->post());
-        if ($this->request->post('type') == 'limit')
-        {
-            return $responses;
-        }
         //3. REALISE WALLET
         $result = [];
         foreach ($responses as $response)
         {
+/**                                                     |
+ *                          market                      |                           limit
+ *                                                      |
+ *  sell    requestCurrensy         requestCurrency     |   sell    requestCurrency         requestCurrency
+ *          requestUser         ->  responseUser        |           requestUser         ->  responseUser
+ *          main                    main                |           hold                    main
+ *                                                      |
+ *          mainCurrency            mainCurrency        |           mainCurrency            mainCurrency
+ *          responseUser        ->  requestUser         |           responseUser        ->  requestUser
+ *          hold                    main                |           hold                    main
+ *                                                      |
+ * -----------------------------------------------------+---------------------------------------------------
+ *                                                      |
+ *  buy     mainCurrency            mainCurrency        |   buy     mainCurrency            mainCurrency
+ *          requestUser         ->  responseUser        |           requestUser         ->  responseUser
+ *          main                    main                |           hold                    main
+ *                                                      |
+ *          requestCurrency         requestCurrency     |           requestCurrency         requestCurrency
+ *          responseUser        ->  requestUser         |           responseUser        ->  requestUser
+ *          hold                    main                |           hold                    main
+ *                                                      |
+ */
             if ($this->request->post('side') == 'buy')
             {
                 //['owner_id' => $order1->owner_id, 'price' => $order1->price, 'quantity' => $quantity]
@@ -141,7 +159,11 @@ class OrderController extends Controller
                     [
                         'currency' => $currency1,
                         'owner_id' => $this->request->post('owner_id'),
-                        'type' => Type::Main->value,
+                        'type' => match ($this->request->post('type'))
+                        {
+                            'market' => Type::Main->value,
+                            'limit' => Type::Hold->value,
+                        }
                     ]
                 )->id;
                 $destination1 = Wallet::findOne(
@@ -177,7 +199,11 @@ class OrderController extends Controller
                     [
                         'currency' => $currency1,
                         'owner_id' => $this->request->post('owner_id'),
-                        'type' => Type::Main->value,
+                        'type' => match ($this->request->post('type'))
+                        {
+                            'market' => Type::Main->value,
+                            'limit' => Type::Hold->value,
+                        },
                     ]
                 )->id;
                 $destination1 = Wallet::findOne(
@@ -206,6 +232,7 @@ class OrderController extends Controller
                 )->id;
                 $value2 = $response['price'] * $response['quantity'];
             }
+            // MAKING TRANSACTIONS
             $result[] = (new Transaction)->create(
                 [
                     'source' => $source1,
@@ -222,6 +249,30 @@ class OrderController extends Controller
                     'value' => $value2
                 ]
             );
+            //RETURN FROM HOLD IF REAL PRICE IS LOWER
+            if ($this->request->post('type') == 'limit')
+            {
+                if (
+                    $this->request->post('side') == 'buy'
+                     and $this->request->post('price') > $response['price']
+                    )
+                {
+                    $result[] = (new Transaction)->create(
+                        [
+                            'source' => $source1,
+                            'destination' => Wallet::findOne(
+                                [
+                                    'currency' => $currency1,
+                                    'owner_id' => $this->request->post('owner_id'),
+                                    'type' => Type::Main->value,
+                                ]
+                            )->id,
+                            'currency' => $currency1,
+                            'value' => ($this->request->post('price') - $response['price']) * $response['quantity'],
+                        ]
+                    );
+                }
+            }
         }
         return $result;
     }
