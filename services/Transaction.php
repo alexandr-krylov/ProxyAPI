@@ -42,7 +42,8 @@ class Transaction
                 'transaction.destination',
                 'transaction.currency',
                 'ROUND(transaction.value, 2) AS value',
-                'transaction.created_at'
+                'transaction.created_at',
+                'transaction.updated_at',
             ]);
         $query->leftJoin('wallet AS sourceWallet', 'sourceWallet.id = transaction.source')
             ->leftJoin('wallet AS destinationWallet', 'destinationWallet.id = transaction.destination')
