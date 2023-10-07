@@ -5,6 +5,8 @@
     clone
     docker-compose up
     docker exec -it proxyapi_app_1 composer install
+    cp ./config/mailer.example.php ./config/mailer.php
+    change mailer.php according your mailer configuration
 Create a lot.
 ```mermaid
 sequenceDiagram

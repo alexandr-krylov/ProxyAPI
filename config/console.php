@@ -2,6 +2,7 @@
 
 $db = require __DIR__ . '/db.php';
 $params = require __DIR__ . '/params.php';
+$mailer = require __DIR__ . '/mailer.php';
 
 return [
     'id' => 'myapp-console', 
@@ -9,6 +10,7 @@ return [
     'controllerNamespace' => 'app\commands',
     'components' => [
         'db' => $db,
+        'mailer' => $mailer,
     ],
     'params' => $params,
 ];

@@ -33,4 +33,35 @@ class Transaction
             return $e->getMessage();
         }
     }
+    public function getMine($request)
+    {
+        $query = TransactionModel::find();
+        $query->select([
+                'transaction.id',
+                'transaction.source',
+                'transaction.destination',
+                'transaction.currency',
+                'ROUND(transaction.value, 2) AS value',
+                'transaction.created_at'
+            ]);
+        $query->leftJoin('wallet AS sourceWallet', 'sourceWallet.id = transaction.source')
+            ->leftJoin('wallet AS destinationWallet', 'destinationWallet.id = transaction.destination')
+            ->orWhere([
+                'and',
+                ['sourceWallet.owner_id' => $request['owner_id']],
+                ['!=', 'destinationWallet.owner_id', $request['owner_id']]
+                ])
+            ->orWhere([
+                'and',
+                ['!=', 'sourceWallet.owner_id', $request['owner_id']],
+                ['destinationWallet.owner_id' => $request['owner_id']]
+            ]);
+        if (key_exists('date', $request))
+        {
+            $query->andWhere("DATE(transaction.created_at) = '{$request['date']}'");
+        }
+        $query->orderBy(['transaction.created_at' => SORT_DESC]);
+        $result = $query->all();
+        return $result;
+    }
 }
